@@ -57,7 +57,6 @@ export const handler = async (
 async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const token = getToken(authHeader)
   const jwt: Jwt = decode(token, { complete: true }) as Jwt
-  console.log(jwt)
 
   const jwksResponse = await Axios.get(jwksUrl)
   const jwks = jwksResponse.data
@@ -81,16 +80,13 @@ function getToken(authHeader: string): string {
 
 function getSigningKey(jwks: any, kid: string) {
   const keys = jwks.keys
-  console.log(keys)
   const signingKey = keys.find((key) => key.kid === kid)
-  console.log(signingKey)
 
   if (!signingKey) {
     throw new Error(`Unable to find a signing key that matches '${kid}'`)
   }
 
   const { x5c } = signingKey
-  console.log(x5c)
   return (
     '-----BEGIN CERTIFICATE-----\n' + x5c[0] + '\n-----END CERTIFICATE-----'
   )
